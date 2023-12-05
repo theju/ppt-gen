@@ -16,11 +16,11 @@ app = Bottle()
 client = openai.OpenAI()
 
 SYSTEM_PROMPT = """
-You are a business analyst at one of the top 4 consulting firms. Build a presentation with the specified title.
+You are a business analyst at one of the top 4 consulting firms. Build a presentation with the specified title and additional context provided.
 
 Here are the conventions to follow:
-* Keep the presentation under 7 slides
-* Each slide may not contain more than 7 lines
+* Keep the presentation under 7 slides.
+* Each slide may not contain more than 7 lines.
 * Each line may not be more than 7 words.
 * The transcript doesn't have to follow the above rules.
 
@@ -81,13 +81,16 @@ def generate_ppt():
     if not prompt:
         return {'error': 'No prompt provided'}
 
+    user_content = f"Title: {prompt}"
+    if data.get('context'):
+        user_content = f'\nContext: {data.get("context")}'
     try:
         # Making a call to OpenAI's ChatGPT
         openai_response = client.chat.completions.create(
             model=data.get('model'),  # Or whichever model you prefer
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Title: {prompt}"},
+                {"role": "user", "content": user_content},
             ],
         )
 
