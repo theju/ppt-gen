@@ -82,8 +82,9 @@ def generate_ppt():
         return {'error': 'No prompt provided'}
 
     user_content = f"Title: {prompt}"
-    if data.get('context'):
-        user_content = f'\nContext: {data.get("context")}'
+    context = data.get('context')
+    if context:
+        user_content += f'\nContext: {context}'
     try:
         # Making a call to OpenAI's ChatGPT
         openai_response = client.chat.completions.create(
